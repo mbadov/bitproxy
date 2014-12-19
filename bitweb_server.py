@@ -210,7 +210,8 @@ class RequestRecorder():
 		service_args = ['--proxy=localhost:%i' % proxy_port,
 						'--proxy-type=http',
 						'--ignore-ssl-errors=yes',
-						'--load-images=yes'
+						'--load-images=yes',
+						'--disk-cache=no'
 						]
 		
 		return webdriver.PhantomJS(service_args=service_args)

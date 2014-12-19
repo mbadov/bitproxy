@@ -84,6 +84,11 @@ class RequestProxy(ProxyHandler):
 	def uncompress():
 		tar_file = os.path.join(RequestProxy.dir_name, 'res.tar')
 		tar = tarfile.open(tar_file)
+		
+		size_mb = os.path.getsize(tar_file) / (1024*1024.0)
+		
+		print "Tar size: %.2f MB" % size_mb
+		
 		for member in tar.getmembers():
 			member.name = os.path.basename(member.name)
 			tar.extract(member,RequestProxy.dir_name)
@@ -93,18 +98,23 @@ class RequestProxy(ProxyHandler):
 		RequestProxy.cache = True
 		mkdir_p('./www/')
 		
+		start = time()
+		
 		params = urllib.urlencode({'url': url})
 		f = urllib.urlopen("http://%s" % RequestProxy.bit_server, params)
 		torrent_data = base64.b64decode(f.read())
 		
+		finish = time()
+		
+		print "Packaged in %.2f seconds" % (finish-start)
+		
 		e = lt.bdecode(torrent_data)
 		info = lt.torrent_info(e)
-		
-		print str(info)
 		
 		params = { 'save_path': './www/', 'ti': info }
 		h = RequestProxy.ses.add_torrent(params)
 		time_slept = 0
+		start = time()
 
 		while not h.is_seed():
 			s = h.status()
@@ -115,10 +125,14 @@ class RequestProxy(ProxyHandler):
 			time_slept += 1
 			if time_slept > 30:
 				break
+		
+		finish = time()
+		
+		print "Downloaded in %.2f seconds" % (finish-start)
 				
 if __name__ == '__main__':
 	p = BitWebClient(sys.argv[1])
 	while(True):
-		raw_input("Reset!")
+		raw_input("Reset!\n")
 		RequestProxy.cache = False
 	p.cleanup()

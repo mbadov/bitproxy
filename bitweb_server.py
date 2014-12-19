@@ -36,11 +36,12 @@ class BitWebServer():
 	
 	def make_torrent_from_url(self, tracker_url, url):
 		temp_dir_name = os.path.join('temp', self.torrent_name(url))
-		tor_dir_name = os.path.join('torrents', self.torrent_name(url))
+		tor_dir_name = os.path.join('torrent_data', self.torrent_name(url))
+		torrent_name = os.path.join('torrent_files', self.torrent_name(url, True))
 		
 		self.rr.record_request(url, temp_dir_name)
 		self.compress_resources(temp_dir_name, tor_dir_name)
-		return self.make_torrent(tracker_url, self.torrent_name(url, True), tor_dir_name)
+		self.make_torrent(tracker_url, torrent_name, tor_dir_name)
 	
 	def compress_resources(self, temp_dir_name, tor_dir_name):
 		mkdir_p(tor_dir_name)
@@ -59,7 +60,7 @@ class BitWebServer():
 		lt.add_files(fs, dir_name)
 		t = lt.create_torrent(fs)
 		t.add_tracker(tracker_url)
-		lt.set_piece_hashes(t, './torrents')
+		lt.set_piece_hashes(t, './torrent_data')
 		f = open(torrent_name, "wb")
 		f.write(lt.bencode(t.generate()))
 		f.close()
@@ -68,13 +69,12 @@ class BitWebServer():
 		info = lt.torrent_info(e)
 		
 		params = { 
-			'save_path': './torrents',
+			'save_path': './torrent_data',
 		    'ti': info,
 			'seed_mode': True
 		}
 		
 		self.ses.add_torrent(params)
-		return torrent_name
 		
 	def cleanup(self):
 		self.rr.cleanup()
@@ -104,12 +104,12 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
 		self.end_headers()
         
 		url = postvars['url'][0]
-		torrent_name = bps.torrent_name(url, True)
+		torrent_file = os.path.join('torrent_files', bps.torrent_name(url, True))
 		
-		if not os.path.exists(torrent_name):
+		if not os.path.exists(torrent_file):
 			bps.make_torrent_from_url(tracker_url, url)
 			
-		torrent_data = open(torrent_name, 'rb').read()
+		torrent_data = open(torrent_file, 'rb').read()
 		self.wfile.write(base64.b64encode(torrent_data))
 
 class RecorderProxy(ProxyHandler):

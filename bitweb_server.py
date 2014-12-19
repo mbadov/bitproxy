@@ -21,7 +21,7 @@ import cgi
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SocketServer import ThreadingMixIn
 
-class BitProxyServer():
+class BitWebServer():
 	def __init__(self):
 		self.rr = RequestRecorder()
 		self.ses = lt.session()
@@ -293,7 +293,7 @@ class RequestRecorder():
 		self.browser.close()
 		self.proxy.server_close()
 		
-bps = BitProxyServer()
+bps = BitWebServer()
 tracker_url = 'http://%s:6969' % get_ip()
 		
 if __name__ == '__main__':

@@ -17,11 +17,11 @@ import libtorrent as lt
 import urllib
 import base64
 
-class BitProxyClient():
-	def __init__(self, bit_server):
+class BitWebClient():
+	def __init__(self, bit_server, headless=False):
 		proxy_port = get_open_port()
 		self.init_proxy(proxy_port)
-		self.browser = self.init_browser(proxy_port)
+		self.browser = self.init_browser(proxy_port, headless)
 		self.ses = lt.session()
 		torrent_port = get_open_port()
 		self.ses.listen_on(torrent_port, torrent_port+1)
@@ -115,7 +115,7 @@ class RequestProxy(ProxyHandler):
 				break
 				
 if __name__ == '__main__':
-	p = BitProxyClient(sys.argv[1])
+	p = BitWebClient(sys.argv[1])
 	while(True):
 		raw_input("Reset!")
 		RequestProxy.cache = False

@@ -63,6 +63,7 @@ class BitWebServer():
 		t = lt.create_torrent(fs)
 		t.add_tracker(tracker_url)
 		lt.set_piece_hashes(t, './torrent_data')
+		
 		f = open(torrent_name, "wb")
 		f.write(lt.bencode(t.generate()))
 		f.close()
@@ -76,7 +77,13 @@ class BitWebServer():
 			'seed_mode': True
 		}
 		
-		self.ses.add_torrent(params)
+		h = self.ses.add_torrent(params)
+		
+		# Wait a bit for the tracker
+		while not h.is_seed():
+			s = h.status()
+			print '%.2f%% complete (down: %.1f kb/s up: %.1f kB/s peers: %d) %s' % (s.progress * 100, s.download_rate / 1000, s.upload_rate / 1000, s.num_peers, s.state)
+			sleep(1)
 		
 	def cleanup(self):
 		self.rr.cleanup()

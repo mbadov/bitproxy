@@ -100,6 +100,8 @@ class RequestProxy(ProxyHandler):
 		e = lt.bdecode(torrent_data)
 		info = lt.torrent_info(e)
 		
+		print str(info)
+		
 		params = { 'save_path': './www/', 'ti': info }
 		h = RequestProxy.ses.add_torrent(params)
 		time_slept = 0
@@ -111,7 +113,7 @@ class RequestProxy(ProxyHandler):
 			sleep(1)
 			time_slept += 1
 			
-			if time_slept > 60:
+			if time_slept > 20:
 				break
 				
 if __name__ == '__main__':

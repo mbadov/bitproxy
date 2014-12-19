@@ -296,7 +296,7 @@ class RequestRecorder():
 		self.proxy.server_close()
 		
 bps = BitWebServer()
-tracker_url = 'http://%s:6969/announce' % get_ip() if len(sys.argv) < 2 else sys.argv[1]
+tracker_url = sys.argv[1]
 		
 if __name__ == '__main__':
 	http_server = ThreadedHTTPServer(('', 8080), HTTPRequestHandler)

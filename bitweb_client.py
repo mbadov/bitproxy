@@ -111,9 +111,9 @@ class RequestProxy(ProxyHandler):
 			
 			print '%.2f%% complete (down: %.1f kb/s up: %.1f kB/s peers: %d) %s' % (s.progress * 100, s.download_rate / 1000, s.upload_rate / 1000, s.num_peers, s.state)
 			sleep(1)
-			time_slept += 1
 			
-			if time_slept > 20:
+			time_slept += 1
+			if time_slept > 30:
 				break
 				
 if __name__ == '__main__':

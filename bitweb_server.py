@@ -80,10 +80,7 @@ class BitWebServer():
 		h = self.ses.add_torrent(params)
 		
 		# Wait a bit for the tracker
-		while not h.is_seed():
-			s = h.status()
-			print '%.2f%% complete (down: %.1f kb/s up: %.1f kB/s peers: %d) %s' % (s.progress * 100, s.download_rate / 1000, s.upload_rate / 1000, s.num_peers, s.state)
-			sleep(1)
+		sleep(5)
 		
 	def cleanup(self):
 		self.rr.cleanup()

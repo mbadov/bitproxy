@@ -18,10 +18,10 @@ import urllib
 import base64
 
 class BitWebClient():
-	def __init__(self, bit_server, headless=False):
+	def __init__(self, bit_server):
 		proxy_port = get_open_port()
 		self.init_proxy(proxy_port)
-		self.browser = self.init_browser(proxy_port, headless)
+		self.browser = self.init_browser(proxy_port)
 		self.ses = lt.session()
 		torrent_port = get_open_port()
 		self.ses.listen_on(torrent_port, torrent_port+1)

@@ -56,6 +56,8 @@ class BitWebServer():
 		tar.close()
 		
 	def make_torrent(self, tracker_url, torrent_name, dir_name):
+		mkdir_p('torrent_files')
+		
 		fs = lt.file_storage()
 		lt.add_files(fs, dir_name)
 		t = lt.create_torrent(fs)
@@ -294,7 +296,7 @@ class RequestRecorder():
 		self.proxy.server_close()
 		
 bps = BitWebServer()
-tracker_url = 'http://%s:6969' % get_ip()
+tracker_url = 'http://%s:6969' % get_ip() if len(sys.argv) < 2 else sys.argv[1]
 		
 if __name__ == '__main__':
 	http_server = ThreadedHTTPServer(('', 8080), HTTPRequestHandler)

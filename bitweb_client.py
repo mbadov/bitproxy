@@ -111,7 +111,7 @@ class RequestProxy(ProxyHandler):
 			sleep(1)
 			time_slept += 1
 			
-			if time_slept > 20:
+			if time_slept > 60:
 				break
 				
 if __name__ == '__main__':
